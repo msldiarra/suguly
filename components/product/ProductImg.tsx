@@ -2,9 +2,11 @@ import Image from 'next/image'
 
 const CATEGORY_PALETTES: Record<string, [string, string]> = {
   electronique: ['#1a1a2e', '#e85d04'],
-  mode: ['#8B4513', '#c9184a'],
+  electromenager: ['#4a4e69', '#9a8c98'],
   maison: ['#1a936f', '#f5f5dc'],
+  mode: ['#8B4513', '#c9184a'],
   beaute: ['#c9184a', '#fff8f0'],
+  enfant: ['#ffd166', '#ef476f'],
   divers: ['#2d6a4f', '#e9c46a'],
 }
 

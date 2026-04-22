@@ -41,6 +41,18 @@ interface SheetgenPhoto {
   filepath: string | null
 }
 
+function mapCategory(raw: string | null): string {
+  if (!raw) return 'divers'
+  const text = raw.toLowerCase()
+  if (text.includes('jouet') || text.includes('enfant') || text.includes('bébé') || text.includes('bebe') || text.includes('peluche')) return 'enfant'
+  if (text.includes('mixeur') || text.includes('fer à repasser') || text.includes('ventilateur') || text.includes('électroménager') || text.includes('electromenager')) return 'electromenager'
+  if (text.includes('vêtement') || text.includes('vetement') || text.includes('chaussure') || text.includes('sac') || text.includes('mode') || text.includes('accessoire')) return 'mode'
+  if (text.includes('lampe') || text.includes('déco') || text.includes('deco') || text.includes('maison') || text.includes('verre') || text.includes('cuisine')) return 'maison'
+  if (text.includes('beauté') || text.includes('beaute') || text.includes('cosmétique') || text.includes('soin')) return 'beaute'
+  if (text.includes('électronique') || text.includes('electronique') || text.includes('téléphone') || text.includes('écouteur') || text.includes('audio')) return 'electronique'
+  return 'divers'
+}
+
 async function convertToWebP(sourcePath: string, destSlug: string): Promise<string | null> {
   const dest = path.join(IMAGES_DIR, `${destSlug}.webp`)
   try {
@@ -85,7 +97,7 @@ async function main() {
 
   const products = sg
     .prepare(
-      `SELECT ps.*, p.filepath as photo_filepath
+      `SELECT ps.*, p.original_path as photo_filepath
        FROM product_sheets ps
        LEFT JOIN photos p ON p.id = ps.photo_id`
     )
@@ -115,7 +127,7 @@ async function main() {
       price: row.price ?? 0,
       currency: row.currency ?? 'XOF',
       brand: row.brand,
-      category: row.category,
+      category: mapCategory(row.category),
       categoryHierarchy: row.category_hierarchy,
       tags: row.tags,
       colors: row.colors,

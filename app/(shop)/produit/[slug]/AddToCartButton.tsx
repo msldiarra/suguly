@@ -42,22 +42,22 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {/* Quantity selector */}
       <div className="flex items-center gap-3">
-        <span className="text-sm font-semibold">Quantité</span>
-        <div className="flex items-center border-2 border-bg-card rounded-lg overflow-hidden">
+        <span className="text-sm font-medium text-text-light">Quantité</span>
+        <div className="flex items-center border border-[#E5E5E5] rounded-lg overflow-hidden">
           <button
             onClick={() => setQty((q) => Math.max(1, q - 1))}
-            className="px-3.5 py-2 bg-white text-text font-bold text-base hover:bg-bg transition-colors"
+            className="px-3 py-2 bg-white text-text-light text-sm hover:bg-[#F7F7F8] transition-colors"
             aria-label="Diminuer quantité"
           >
             −
           </button>
-          <span className="px-4 py-2 font-bold text-sm min-w-[40px] text-center">{qty}</span>
+          <span className="px-4 py-2 font-medium text-sm min-w-[40px] text-center border-x border-[#E5E5E5]">{qty}</span>
           <button
             onClick={() => setQty((q) => Math.min(10, q + 1))}
-            className="px-3.5 py-2 bg-white text-primary font-bold text-base hover:bg-bg transition-colors"
+            className="px-3 py-2 bg-white text-text-light text-sm hover:bg-[#F7F7F8] transition-colors"
             aria-label="Augmenter quantité"
           >
             +
@@ -69,17 +69,17 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
       <div className="flex flex-col sm:flex-row gap-2.5">
         <button
           onClick={handleAdd}
-          className={`flex-1 py-3.5 px-6 rounded-xl font-extrabold text-sm text-white transition-colors ${
-            added ? 'bg-emerald-600' : 'bg-primary hover:bg-primary-dark'
+          className={`flex-1 py-3 px-6 rounded-xl font-medium text-sm text-white transition-colors ${
+            added ? 'bg-emerald-600' : 'bg-text hover:bg-black'
           }`}
         >
-          {added ? '✓ Ajouté au panier !' : '🛒 Ajouter au panier'}
+          {added ? '✓ Ajouté au panier' : 'Ajouter au panier'}
         </button>
         <button
           onClick={handleBuyNow}
-          className="flex-1 py-3.5 px-6 rounded-xl font-extrabold text-sm text-primary bg-white border-2 border-primary hover:bg-primary-light transition-colors"
+          className="flex-1 py-3 px-6 rounded-xl font-medium text-sm text-text bg-white border border-[#E5E5E5] hover:border-[#D1D1D1] hover:bg-[#F7F7F8] transition-colors"
         >
-          ⚡ Acheter maintenant
+          Acheter maintenant
         </button>
       </div>
     </div>

@@ -15,17 +15,17 @@ const config: Config = {
           light: '#fff3e8',
         },
         bg: {
-          DEFAULT: '#F5F3EF',
-          card: '#F0EDE8',
+          DEFAULT: '#FAF9F6',
+          card: '#FFFFFF',
         },
         text: {
-          DEFAULT: '#1C1917',
-          light: '#7a6f66',
+          DEFAULT: '#1F1F1F',
+          light: '#6B6B6B',
         },
       },
       fontFamily: {
-        sans: ['var(--font-jakarta)', 'sans-serif'],
-        head: ['var(--font-sora)', 'sans-serif'],
+        sans: ['var(--font-inter)', 'sans-serif'],
+        head: ['var(--font-outfit)', 'sans-serif'],
       },
     },
   },

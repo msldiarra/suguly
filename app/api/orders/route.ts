@@ -3,6 +3,8 @@ import { prisma } from '@/lib/db'
 import { generateOrderNumber } from '@/lib/orders'
 import { getDeliveryFee } from '@/lib/delivery'
 import { isMalianPhone } from '@/lib/validate'
+import { verifyToken } from '@/lib/auth'
+import { cookies } from 'next/headers'
 
 interface OrderItemInput {
   productId: number
@@ -23,6 +25,16 @@ export async function POST(req: NextRequest) {
   try {
     const body: CreateOrderBody = await req.json()
     const { guestName, guestPhone, quartier, address, deliveryType = 'standard', paymentMethod, items } = body
+
+    // Check for existing session to link customerId
+    let customerId: number | undefined
+    const token = cookies().get('suguly_session')?.value
+    if (token) {
+      const decoded = verifyToken(token)
+      if (decoded?.id) {
+        customerId = decoded.id
+      }
+    }
 
     // Validate inputs
     if (!guestName?.trim()) return NextResponse.json({ error: 'Nom requis' }, { status: 400 })
@@ -50,6 +62,7 @@ export async function POST(req: NextRequest) {
     const order = await prisma.order.create({
       data: {
         orderNumber: generateOrderNumber(),
+        customerId,
         guestName: guestName.trim(),
         guestPhone: `+223${guestPhone.replace(/\s/g, '')}`,
         quartier,
@@ -69,6 +82,23 @@ export async function POST(req: NextRequest) {
       },
       include: { items: { include: { product: true } } },
     })
+
+    if (paymentMethod === 'ORANGE_MONEY') {
+      try {
+        const { createOrangeMoneyPayment } = await import('@/lib/orange-money')
+        const { paymentUrl } = await createOrangeMoneyPayment({
+          internalOrderId: order.id,
+          orderNumber: order.orderNumber,
+          amount: order.total,
+          reference: `Commande ${order.orderNumber}`
+        })
+        return NextResponse.json({ order, paymentUrl }, { status: 201 })
+      } catch (omError) {
+        console.error('[POST /api/orders] Orange Money initiation failed:', omError)
+        // We might still want to return the order but indicate payment initiation failed
+        return NextResponse.json({ order, error: 'Échec initialisation Orange Money' }, { status: 201 })
+      }
+    }
 
     return NextResponse.json({ order }, { status: 201 })
   } catch (err) {

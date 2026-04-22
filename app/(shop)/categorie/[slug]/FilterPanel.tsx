@@ -45,12 +45,12 @@ export function FilterPanel({ activeFilters }: FilterPanelProps) {
   }
 
   return (
-    <div className={`bg-white rounded-xl p-5 border border-bg-card ${isPending ? 'opacity-60' : ''}`}>
-      <h3 className="font-head text-sm font-extrabold mb-4">Filtres</h3>
+    <div className={`bg-white rounded-xl p-5 border border-[#E5E5E5] ${isPending ? 'opacity-60' : ''}`}>
+      <h3 className="font-head text-sm font-semibold mb-4">Filtres</h3>
 
       {/* Sort */}
       <div className="mb-5">
-        <p className="text-xs font-bold text-text-light uppercase tracking-wide mb-2.5">Trier par</p>
+        <p className="text-xs font-medium text-text-light uppercase tracking-wide mb-2.5">Trier par</p>
         {[
           ['default', 'Plus récents'],
           ['price-asc', 'Prix croissant'],
@@ -62,7 +62,7 @@ export function FilterPanel({ activeFilters }: FilterPanelProps) {
               name="sort"
               checked={activeFilters.sortBy === val}
               onChange={() => updateFilter('sortBy', val === 'default' ? null : val)}
-              className="accent-primary"
+              className="accent-text"
             />
             {label}
           </label>
@@ -71,7 +71,7 @@ export function FilterPanel({ activeFilters }: FilterPanelProps) {
 
       {/* Price slider */}
       <div>
-        <p className="text-xs font-bold text-text-light uppercase tracking-wide mb-2.5">Prix max</p>
+        <p className="text-xs font-medium text-text-light uppercase tracking-wide mb-2.5">Prix max</p>
         <input
           type="range"
           min={2000}
@@ -81,12 +81,12 @@ export function FilterPanel({ activeFilters }: FilterPanelProps) {
           onChange={(e) => handlePriceChange(Number(e.target.value))}
           onMouseUp={(e) => handlePriceCommit(Number((e.target as HTMLInputElement).value))}
           onTouchEnd={(e) => handlePriceCommit(Number((e.target as HTMLInputElement).value))}
-          className="w-full accent-primary"
+          className="w-full accent-text"
           aria-label="Prix maximum"
         />
         <div className="flex justify-between text-xs text-text-light mt-1">
           <span>0 FCFA</span>
-          <span className="font-bold text-primary">{formatPrice(priceMax)}</span>
+          <span className="font-medium text-text">{formatPrice(priceMax)}</span>
         </div>
       </div>
     </div>

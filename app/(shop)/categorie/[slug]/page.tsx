@@ -7,25 +7,28 @@ import { Breadcrumb } from '@/components/ui/Breadcrumb'
 import { FilterPanel } from './FilterPanel'
 import { ActiveFilterChips } from './ActiveFilterChips'
 
-const CATEGORY_META: Record<string, { label: string; description: string }> = {
+import { getCategoryLabel, CATEGORIES } from '@/lib/categories'
+
+const CATEGORY_META: Record<string, { description: string }> = {
   electronique: {
-    label: 'Électronique',
     description: 'Écouteurs, chargeurs, montres connectées et plus. Livraison à Bamako.',
   },
-  mode: {
-    label: 'Mode & Accessoires',
-    description: 'Vêtements, sacs, chaussures et accessoires de mode. Livraison à Bamako.',
+  electromenager: {
+    description: 'Mixeurs, fers à repasser, ventilateurs. Équipement pour la maison.',
   },
   maison: {
-    label: 'Maison & Déco',
     description: "Lampes, coussins, organisateurs pour votre maison. Livraison à Bamako.",
   },
+  mode: {
+    description: 'Vêtements, sacs, chaussures et accessoires de mode. Livraison à Bamako.',
+  },
   beaute: {
-    label: 'Beauté & Soins',
     description: 'Crèmes, huiles, maquillage adapté aux carnations africaines. Livraison Bamako.',
   },
+  enfant: {
+    description: 'Jouets, tricycles, accessoires pour bébés et enfants.',
+  },
   divers: {
-    label: 'Divers',
     description: 'Multiprises, sacs à dos, calculatrices et plus. Livraison à Bamako.',
   },
 }
@@ -39,10 +42,11 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const { slug } = await params
   const meta = CATEGORY_META[slug]
   if (!meta) return {}
+  const label = getCategoryLabel(slug)
   return {
-    title: meta.label,
+    title: label,
     description: meta.description,
-    openGraph: { title: `${meta.label} | Suguly`, description: meta.description },
+    openGraph: { title: `${label} | Suguly`, description: meta.description },
   }
 }
 
@@ -55,6 +59,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   const sp = await searchParams
   const meta = CATEGORY_META[slug]
   if (!meta) notFound()
+  const label = getCategoryLabel(slug)
 
   const sortBy = (sp.sortBy ?? 'default') as 'default' | 'price-asc' | 'price-desc' | 'newest'
   const maxPrice = sp.maxPrice ? Number(sp.maxPrice) : undefined
@@ -78,7 +83,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       <Breadcrumb
         items={[
           { label: 'Accueil', href: '/' },
-          { label: meta.label },
+          { label },
         ]}
       />
 
@@ -94,7 +99,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
           {/* Toolbar */}
           <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
             <div>
-              <h1 className="font-head text-xl sm:text-2xl font-extrabold">{meta.label}</h1>
+              <h1 className="font-head text-xl sm:text-2xl font-extrabold">{label}</h1>
               <p className="text-sm text-text-light">
                 {result.total} résultat{result.total !== 1 ? 's' : ''}
               </p>
