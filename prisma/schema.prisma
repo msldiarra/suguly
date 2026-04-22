@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id                Int         @id @default(autoincrement())
+  sheetgenId        Int?        @unique
+  title             String
+  description       String?
+  price             Float
+  currency          String      @default("XOF")
+  brand             String?
+  category          String?
+  categoryHierarchy String?
+  tags              String?
+  colors            String?
+  materials         String?
+  features          String?
+  metaDescription   String?
+  slug              String      @unique
+  seoKeywords       String?
+  imageUrl          String?
+  isActive          Boolean     @default(true)
+  confidence        Float?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  orderItems        OrderItem[]
+}
+
+model Customer {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String   @unique
+  quartier  String?
+  createdAt DateTime @default(now())
+  orders    Order[]
+}
+
+model Order {
+  id              Int         @id @default(autoincrement())
+  orderNumber     String      @unique
+  customerId      Int?
+  customer        Customer?   @relation(fields: [customerId], references: [id])
+  guestName       String?
+  guestPhone      String?
+  quartier        String
+  address         String?
+  deliveryFee     Float
+  subtotal        Float
+  total           Float
+  paymentMethod   String
+  paymentStatus   String      @default("PENDING")
+  orderStatus     String      @default("NEW")
+  omTransactionId String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  unitPrice Float
+  available Boolean @default(true)
+}

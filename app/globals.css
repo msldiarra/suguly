@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@700;800&display=swap');
+
+:root {
+  --primary: #F47B20;
+  --primary-dark: #d4620d;
+  --primary-light: #fff3e8;
+  --font-jakarta: 'Plus Jakarta Sans', sans-serif;
+  --font-sora: 'Sora', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #F5F3EF;
+  color: #1C1917;
+  font-family: var(--font-jakarta);
+  -webkit-font-smoothing: antialiased;
+}
+
+input,
+select,
+textarea,
+button {
+  font-family: var(--font-jakarta);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4c9be;
+  border-radius: 99px;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+@layer utilities {
+  .font-head {
+    font-family: var(--font-sora);
+  }
+}
