@@ -229,7 +229,7 @@ export default function ComptePage() {
           <p className="text-sm text-text-light">
             {step === 'tel' && "Connectez-vous avec votre numéro"}
             {step === 'login-pin' && "Saisissez votre code secret"}
-            {step === 'otp' && "Vérification par WhatsApp"}
+            {step === 'otp' && "Vérification par SMS"}
             {step === 'create-pin' && "Sécurisez votre compte"}
           </p>
         </div>
@@ -242,25 +242,28 @@ export default function ComptePage() {
 
         {step === 'tel' && (
           <>
-            <label className="block text-sm font-medium mb-2">Numéro de téléphone</label>
-            <div className="flex border border-[#E5E5E5] rounded-xl overflow-hidden mb-5 focus-within:border-text transition-colors">
-              <span className="px-3.5 py-3 bg-[#F7F7F8] border-r border-[#E5E5E5] text-sm font-medium text-text-light">+223</span>
+            <label className="block text-sm font-semibold mb-2 text-text">Numéro de téléphone</label>
+            <div className="flex border border-[#A3A3A3] rounded-xl overflow-hidden mb-5 focus-within:border-text transition-colors">
+              <span className="px-3.5 py-3 bg-[#F7F7F8] border-r border-[#A3A3A3] text-sm font-bold text-text">+223</span>
               <input
                 type="tel"
                 value={tel}
                 onChange={(e) => setTel(e.target.value.replace(/\D/g, '').slice(0, 8))}
                 placeholder="76 54 32 10"
-                className="flex-1 px-3.5 py-3 text-sm outline-none bg-white"
+                className="flex-1 px-3.5 py-3 text-sm font-medium text-text outline-none bg-white placeholder:text-[#A3A3A3] placeholder:font-normal"
                 autoFocus
               />
             </div>
             <button
               onClick={handleContinue}
               disabled={isLoading || tel.length < 8}
-              className="w-full py-3 bg-text text-white rounded-xl font-medium text-sm hover:bg-black transition-colors disabled:opacity-50"
+              className="w-full py-3 bg-text text-white rounded-xl font-medium text-sm hover:bg-black transition-colors disabled:bg-[#E5E5E5] disabled:text-[#A3A3A3] disabled:opacity-100"
             >
               {isLoading ? 'Vérification...' : 'Continuer'}
             </button>
+            <p className="mt-4 text-[11px] text-[#666] font-medium text-center leading-relaxed">
+              Si vous n'avez pas encore de compte, un nouveau compte sera créé. Si vous en possédez déjà un, il vous sera simplement demandé de saisir votre code PIN.
+            </p>
           </>
         )}
 
@@ -294,7 +297,7 @@ export default function ComptePage() {
                 onClick={() => handleSendOtp(true)}
                 className="flex-1 py-3 bg-white border border-[#E5E5E5] rounded-xl font-medium text-sm text-text-light hover:bg-[#F7F7F8] transition-colors"
               >
-                Se connecter par WhatsApp
+                Se connecter par SMS
               </button>
             </div>
           </>
@@ -302,7 +305,7 @@ export default function ComptePage() {
 
         {step === 'otp' && (
           <>
-            <p className="text-sm text-text-light mb-4 text-center">Code envoyé par WhatsApp au +223 {tel}</p>
+            <p className="text-sm text-text-light mb-4 text-center">Code envoyé par SMS au +223 {tel}</p>
             <input
               type="text"
               inputMode="numeric"

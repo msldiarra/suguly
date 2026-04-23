@@ -1,12 +1,47 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 
-// MOCK: Replace with real WhatsApp API later (Twilio, Meta, etc.)
-async function sendWhatsApp(phone: string, message: string) {
-  console.log(`\n\n🟢 [MOCK WhatsApp to ${phone}]: ${message}\n\n`)
-  // Wait a little bit to simulate network
-  await new Promise(r => setTimeout(r, 1000))
-  return true
+// Twilio SMS API implementation
+async function sendSms(phone: string, message: string) {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID
+  const authToken = process.env.TWILIO_AUTH_TOKEN
+  const fromNumber = process.env.TWILIO_PHONE_NUMBER
+
+  if (!accountSid || !authToken || !fromNumber) {
+    console.warn('⚠️ Twilio credentials missing, falling back to mock.')
+    console.log(`\n\n🟢 [MOCK SMS to ${phone}]: ${message}\n\n`)
+    return true
+  }
+
+  try {
+    const auth = Buffer.from(`${accountSid}:${authToken}`).toString('base64')
+    const res = await fetch(
+      `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${auth}`,
+        },
+        body: new URLSearchParams({
+          To: phone,
+          From: fromNumber,
+          Body: message,
+        }),
+      }
+    )
+
+    if (!res.ok) {
+      const errorData = await res.json()
+      console.error('Twilio Error:', errorData)
+      throw new Error(`Twilio API error: ${res.status}`)
+    }
+
+    return true
+  } catch (error) {
+    console.error('Failed to send SMS via Twilio:', error)
+    return false
+  }
 }
 
 export async function POST(req: Request) {
@@ -32,8 +67,8 @@ export async function POST(req: Request) {
       }
     })
 
-    // Send WhatsApp message
-    await sendWhatsApp(phone, `Votre code Suguly est: ${code}. Il est valable 5 minutes.`)
+    // Send SMS message
+    await sendSms(phone, `Votre code Suguly est: ${code}. Il est valable 5 minutes.`)
 
     // Check if customer already exists and has a PIN
     const customer = await prisma.customer.findUnique({ where: { phone } })
