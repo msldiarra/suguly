@@ -1,6 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { formatPrice } from '@/lib/format'
 
 const STATUS_COLORS: Record<string, string> = {
@@ -11,9 +13,17 @@ const STATUS_COLORS: Record<string, string> = {
 
 type Step = 'tel' | 'login-pin' | 'otp' | 'create-pin'
 
+interface AccountCustomer {
+  id: number
+  phone: string
+  name: string | null
+  role: 'CUSTOMER' | 'SHOPPER' | 'ADMIN'
+}
+
 export default function ComptePage() {
+  const router = useRouter()
   const [loggedIn, setLoggedIn] = useState(false)
-  const [customerInfo, setCustomerInfo] = useState<any>(null)
+  const [customerInfo, setCustomerInfo] = useState<AccountCustomer | null>(null)
   const [orders, setOrders] = useState<any[]>([])
   
   const [step, setStep] = useState<Step>('tel')
@@ -25,6 +35,7 @@ export default function ComptePage() {
   const [isLoading, setIsLoading] = useState(false)
   const [isPageLoading, setIsPageLoading] = useState(true)
   const [error, setError] = useState('')
+  const [redirectTarget, setRedirectTarget] = useState<string | null>(null)
 
   // Check session on mount
   useEffect(() => {
@@ -45,6 +56,18 @@ export default function ComptePage() {
     }
     checkSession()
   }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    setRedirectTarget(params.get('redirect'))
+  }, [])
+
+  useEffect(() => {
+    if (loggedIn && redirectTarget) {
+      router.replace(redirectTarget)
+    }
+  }, [loggedIn, redirectTarget, router])
 
   // Fetch orders when logged in
   useEffect(() => {
@@ -382,6 +405,30 @@ export default function ComptePage() {
         </div>
       </div>
 
+      {customerInfo && ['SHOPPER', 'ADMIN'].includes(customerInfo.role) && (
+        <div className="mb-7 rounded-2xl border border-[#E9E3DA] bg-white p-4 shadow-sm">
+          <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.08em] text-text-light">Accès métier</p>
+          <h3 className="font-head text-lg font-semibold text-text">Espace shopper</h3>
+          <p className="mt-1 text-sm text-text-light">
+            Consultez les commandes à traiter, leur détail et leur progression.
+          </p>
+          <Link
+            href="/shopper"
+            className="mt-4 inline-flex rounded-xl bg-text px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-black"
+          >
+            Ouvrir le dashboard shopper
+          </Link>
+          {customerInfo.role === 'ADMIN' && (
+            <Link
+              href="/admin/commandes"
+              className="mt-3 inline-flex rounded-xl border border-[#D1D1D1] px-4 py-3 text-sm font-bold text-text transition-colors hover:bg-[#F7F7F8]"
+            >
+              Ouvrir la supervision admin
+            </Link>
+          )}
+        </div>
+      )}
+
       <h3 className="font-head font-semibold text-base mb-4">Mes commandes</h3>
       <div className="space-y-3">
         {orders.length === 0 ? (
@@ -419,4 +466,3 @@ export default function ComptePage() {
     </div>
   )
 }
-

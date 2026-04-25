@@ -7,11 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  CUSTOMER
+  SHOPPER
+  ADMIN
+}
+
 model Product {
   id                Int         @id @default(autoincrement())
   sheetgenId        Int?        @unique
   title             String
   description       String?
+  basePrice         Float
   price             Float
   currency          String      @default("XOF")
   brand             String?
@@ -33,13 +40,16 @@ model Product {
 }
 
 model Customer {
-  id        Int      @id @default(autoincrement())
-  name      String?
-  phone     String   @unique
-  quartier  String?
-  pinHash   String?
-  createdAt DateTime @default(now())
-  orders    Order[]
+  id                    Int      @id @default(autoincrement())
+  name                  String?
+  phone                 String   @unique
+  quartier              String?
+  pinHash               String?
+  role                  UserRole @default(CUSTOMER)
+  createdAt             DateTime @default(now())
+  orders                Order[]  @relation("CustomerOrders")
+  assignedShopperOrders Order[]  @relation("AssignedShopperOrders")
+  orderNotes            OrderNote[]
 }
 
 model OtpSession {
@@ -53,17 +63,19 @@ model OtpSession {
 }
 
 model Order {
-  id              Int         @id @default(autoincrement())
-  orderNumber     String      @unique
-  customerId      Int?
-  customer        Customer?   @relation(fields: [customerId], references: [id])
-  guestName       String?
-  guestPhone      String?
-  quartier        String
-  address         String?
-  deliveryFee     Float
-  subtotal        Float
-  total           Float
+  id                    Int         @id @default(autoincrement())
+  orderNumber           String      @unique
+  customerId            Int?
+  customer              Customer?   @relation("CustomerOrders", fields: [customerId], references: [id])
+  assignedShopperId     Int?
+  assignedShopper       Customer?   @relation("AssignedShopperOrders", fields: [assignedShopperId], references: [id])
+  guestName             String?
+  guestPhone            String?
+  quartier              String
+  address               String?
+  deliveryFee           Float
+  subtotal              Float
+  total                 Float
   paymentMethod         String
   paymentStatus         String      @default("PENDING")
   orderStatus           String      @default("NEW")
@@ -73,6 +85,7 @@ model Order {
   createdAt             DateTime    @default(now())
   updatedAt             DateTime    @updatedAt
   items                 OrderItem[]
+  notes                 OrderNote[]
 }
 
 model OrderItem {
@@ -84,4 +97,16 @@ model OrderItem {
   quantity  Int
   unitPrice Float
   available Boolean @default(true)
+}
+
+model OrderNote {
+  id             Int       @id @default(autoincrement())
+  orderId        Int
+  order          Order     @relation(fields: [orderId], references: [id])
+  authorId       Int?
+  author         Customer? @relation(fields: [authorId], references: [id])
+  body           String
+  createdAt      DateTime  @default(now())
+
+  @@index([orderId])
 }

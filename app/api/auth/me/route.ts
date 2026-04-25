@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { verifyToken } from '@/lib/auth'
+import { getCustomerRole } from '@/lib/customer-role'
 import { cookies } from 'next/headers'
 
 export async function GET() {
@@ -18,7 +19,9 @@ export async function GET() {
 
     if (!customer) return NextResponse.json({ authenticated: false })
 
-    return NextResponse.json({ authenticated: true, customer })
+    const role = await getCustomerRole(customer.id)
+
+    return NextResponse.json({ authenticated: true, customer: { ...customer, role } })
   } catch (error) {
     return NextResponse.json({ authenticated: false }, { status: 500 })
   }

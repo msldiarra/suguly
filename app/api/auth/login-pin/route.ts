@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { signToken } from '@/lib/auth'
+import { getCustomerRole } from '@/lib/customer-role'
 import { cookies } from 'next/headers'
 import { createHash } from 'crypto'
 
@@ -25,7 +26,8 @@ export async function POST(req: Request) {
     }
 
     // Create a secure session token
-    const token = signToken({ id: customer.id, phone: customer.phone }, 180)
+    const role = await getCustomerRole(customer.id)
+    const token = signToken({ id: customer.id, phone: customer.phone, role }, 180)
 
     // Set cookie
     cookies().set({
@@ -40,7 +42,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ 
       success: true,
-      customer: { id: customer.id, phone: customer.phone, name: customer.name }
+      customer: { id: customer.id, phone: customer.phone, name: customer.name, role }
     })
   } catch (error) {
     console.error('Erreur lors du login avec PIN:', error)

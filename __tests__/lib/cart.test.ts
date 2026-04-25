@@ -55,20 +55,23 @@ describe('calcTotal', () => {
 
 describe('addToCart', () => {
   it('adds a new product', () => {
-    const cart = addToCart([], { ...item1, quantity: 0 })
+    const { quantity: _quantity, ...product } = item1
+    const cart = addToCart([], product)
     expect(cart).toHaveLength(1)
     expect(cart[0].quantity).toBe(1)
   })
 
   it('increments quantity for existing product', () => {
-    const cart = addToCart([item1], { ...item1, quantity: 0 })
+    const { quantity: _quantity, ...product } = item1
+    const cart = addToCart([item1], product)
     expect(cart).toHaveLength(1)
     expect(cart[0].quantity).toBe(3) // 2 + 1
   })
 
   it('caps quantity at 10', () => {
     const bigCart: CartItem = { ...item1, quantity: 10 }
-    const cart = addToCart([bigCart], { ...item1, quantity: 0 })
+    const { quantity: _quantity, ...product } = item1
+    const cart = addToCart([bigCart], product)
     expect(cart[0].quantity).toBe(10)
   })
 })

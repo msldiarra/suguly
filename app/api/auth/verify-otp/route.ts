@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { signToken } from '@/lib/auth'
+import { getCustomerRole } from '@/lib/customer-role'
 import { cookies } from 'next/headers'
 
 export async function POST(req: Request) {
@@ -34,8 +35,10 @@ export async function POST(req: Request) {
       })
     }
 
+    const role = await getCustomerRole(customer.id)
+
     // Create a secure session token
-    const token = signToken({ id: customer.id, phone: customer.phone }, 180) // 180 days
+    const token = signToken({ id: customer.id, phone: customer.phone, role }, 180) // 180 days
 
     // Set cookie
     cookies().set({
@@ -54,7 +57,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ 
       success: true, 
       hasPin: !!customer.pinHash,
-      customer: { id: customer.id, phone: customer.phone, name: customer.name }
+      customer: { id: customer.id, phone: customer.phone, name: customer.name, role }
     })
   } catch (error) {
     console.error('Erreur lors de la vérification OTP:', error)

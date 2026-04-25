@@ -7,7 +7,12 @@ export function Footer() {
     <footer className="bg-[#1A1A1A] text-[#999] mt-16 pt-10 pb-6">
       <div className="max-w-screen-xl mx-auto px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
         <div>
-          <Logo size="sm" />
+          <Logo
+            size="xs"
+            onDark
+            className="mb-2"
+            imgClassName="w-[72px] sm:w-[66px]"
+          />
           <p className="mt-3 text-sm leading-relaxed text-[#777]">
             E-commerce fiable à Bamako.<br />Livraison rapide, paiement Orange Money.
           </p>

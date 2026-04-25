@@ -29,6 +29,7 @@ export default function CheckoutPage() {
   const [cart, setCart] = useState<CartItem[]>([])
   const [step, setStep] = useState(1)
   const [submitting, setSubmitting] = useState(false)
+  const [authChecked, setAuthChecked] = useState(false)
   const [form, setForm] = useState<FormState>({
     nom: '',
     tel: '',
@@ -41,24 +42,45 @@ export default function CheckoutPage() {
   const [cancelError, setCancelError] = useState(false)
 
   useEffect(() => {
-    // Check if user came back from Orange Money cancellation
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      if (params.get('error') === 'cancelled') {
-        setStep(2) // Go directly to payment step
-        setCancelError(true)
-        // Clean URL
-        window.history.replaceState({}, '', '/checkout')
+    const initCheckout = async () => {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search)
+        if (params.get('error') === 'cancelled') {
+          setStep(2)
+          setCancelError(true)
+          window.history.replaceState({}, '', '/checkout')
+        }
+      }
+
+      const raw = localStorage.getItem('suguly_cart')
+      const items = raw ? JSON.parse(raw) : []
+      if (items.length === 0) {
+        router.replace('/panier')
+        return
+      }
+
+      try {
+        const res = await fetch('/api/auth/me')
+        const data = await res.json()
+
+        if (!res.ok || !data.authenticated) {
+          router.replace('/compte?redirect=/checkout')
+          return
+        }
+
+        setCart(items)
+        setForm((current) => ({
+          ...current,
+          nom: current.nom || data.customer?.name || '',
+          tel: current.tel || data.customer?.phone?.replace('+223', '') || '',
+        }))
+        setAuthChecked(true)
+      } catch {
+        router.replace('/compte?redirect=/checkout')
       }
     }
 
-    const raw = localStorage.getItem('suguly_cart')
-    const items = raw ? JSON.parse(raw) : []
-    if (items.length === 0) {
-      router.replace('/panier')
-      return
-    }
-    setCart(items)
+    void initCheckout()
   }, [router])
 
   const setF = <K extends keyof FormState>(k: K, v: FormState[K]) =>
@@ -135,7 +157,7 @@ export default function CheckoutPage() {
     }
   }
 
-  if (cart.length === 0) return null
+  if (!authChecked || cart.length === 0) return null
 
   return (
     <div className="max-w-screen-md mx-auto px-4 sm:px-8 py-6 sm:py-8">

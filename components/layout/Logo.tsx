@@ -1,24 +1,48 @@
 import Link from 'next/link'
 
 interface LogoProps {
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'xs' | 'sm' | 'md' | 'lg'
+  onDark?: boolean
+  className?: string
+  imgClassName?: string
 }
 
-const SIZE_MAP = { sm: 20, md: 26, lg: 32 }
-const FONT_MAP = { sm: 'text-sm', md: 'text-base', lg: 'text-xl' }
+const SIZE_MAP = {
+  xs: { width: 72, height: 22 },
+  sm: { width: 88, height: 27 },
+  md: { width: 140, height: 43, mobileScale: 0.9 },
+  lg: { width: 176, height: 54 },
+}
 
-export function Logo({ size = 'md' }: LogoProps) {
-  const s = SIZE_MAP[size]
+export function Logo({ size = 'md', onDark = false, className = '', imgClassName = '' }: LogoProps) {
+  const dimensions = SIZE_MAP[size]
+  const mobileStyle = size === 'md'
+    ? {
+        width: `${Math.round(dimensions.width * (dimensions.mobileScale ?? 1))}px`,
+        height: 'auto',
+      }
+    : undefined
+
   return (
-    <Link href="/" className="inline-flex items-center gap-1.5 no-underline">
-      <svg width={s} height={s} viewBox="0 0 32 32" fill="none">
-        <rect width="32" height="32" rx="8" fill="var(--primary)" />
-        <path d="M8 16c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-        <circle cx="16" cy="16" r="3" fill="white" />
-      </svg>
-      <span className={`font-head font-extrabold text-text tracking-tight ${FONT_MAP[size]}`}>
-        suguly
-      </span>
+    <Link
+      href="/"
+      aria-label="Suguly"
+      className={[
+        'inline-flex items-center no-underline',
+        onDark ? 'rounded-lg bg-white px-2.5 py-1.5' : '',
+        className,
+      ].join(' ')}
+    >
+      <img
+        src="/logo-suguly.webp"
+        alt="Suguly"
+        width={dimensions.width}
+        height={dimensions.height}
+        loading="eager"
+        decoding="async"
+        className={['h-auto sm:w-auto', imgClassName].join(' ').trim()}
+        style={mobileStyle}
+      />
     </Link>
   )
 }

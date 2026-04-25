@@ -1,9 +1,17 @@
 import { createHmac } from 'crypto'
+import type { AppUserRole } from './customer-role'
 
 const SECRET = process.env.JWT_SECRET || 'suguly-super-secret-key-2026'
 
+export interface SessionPayload {
+  id: number
+  phone: string
+  role: AppUserRole
+  exp?: number
+}
+
 // Simple token generator (not a full JWT, but good enough for MVP)
-export function signToken(payload: object, expiresInDays: number = 30): string {
+export function signToken(payload: Omit<SessionPayload, 'exp'>, expiresInDays: number = 30): string {
   const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url')
   const payloadBase64 = Buffer.from(JSON.stringify({
     ...payload,
@@ -17,7 +25,7 @@ export function signToken(payload: object, expiresInDays: number = 30): string {
   return `${header}.${payloadBase64}.${signature}`
 }
 
-export function verifyToken(token: string): any | null {
+export function verifyToken(token: string): SessionPayload | null {
   try {
     const [header, payload, signature] = token.split('.')
     if (!header || !payload || !signature) return null

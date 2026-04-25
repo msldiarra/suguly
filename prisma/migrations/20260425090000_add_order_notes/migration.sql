@@ -1,0 +1,11 @@
+CREATE TABLE "OrderNote" (
+  "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "orderId" INTEGER NOT NULL,
+  "authorId" INTEGER,
+  "body" TEXT NOT NULL,
+  "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "OrderNote_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT "OrderNote_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "Customer" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+CREATE INDEX "OrderNote_orderId_idx" ON "OrderNote"("orderId");

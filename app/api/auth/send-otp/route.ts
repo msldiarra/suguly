@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { getCustomerRole } from '@/lib/customer-role'
 
 // Twilio SMS API implementation
 async function sendSms(phone: string, message: string) {
@@ -74,7 +75,11 @@ export async function POST(req: Request) {
     const customer = await prisma.customer.findUnique({ where: { phone } })
     const hasPin = !!customer?.pinHash
 
-    return NextResponse.json({ success: true, hasPin })
+    return NextResponse.json({
+      success: true,
+      hasPin,
+      role: customer ? await getCustomerRole(customer.id) : null,
+    })
   } catch (error) {
     console.error('Erreur lors de l\'envoi de l\'OTP:', error)
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })

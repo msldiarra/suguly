@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
+import { getCustomerRole } from '@/lib/customer-role'
 
 export async function POST(req: Request) {
   try {
@@ -12,7 +13,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ 
       exists: !!customer, 
-      hasPin: !!customer?.pinHash 
+      hasPin: !!customer?.pinHash,
+      role: customer ? await getCustomerRole(customer.id) : null,
     })
   } catch (error) {
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })

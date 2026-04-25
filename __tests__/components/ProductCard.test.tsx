@@ -8,6 +8,7 @@ const mockProduct: Product = {
   sheetgenId: null,
   title: 'Écouteurs sans fil Bluetooth',
   description: 'Son stéréo haute qualité',
+  basePrice: 14500,
   price: 15900,
   currency: 'XOF',
   brand: 'SoundPro',
@@ -37,6 +38,23 @@ vi.mock('next/link', () => ({
 // Mock ProductImg
 vi.mock('@/components/product/ProductImg', () => ({
   ProductImg: ({ title }: { title: string }) => <div data-testid="product-img">{title}</div>,
+}))
+
+vi.mock('@/components/product/AddToCartCardButton', () => ({
+  AddToCartCardButton: ({
+    product,
+    onAddToCart,
+  }: {
+    product: Product
+    onAddToCart?: (product: Product) => void
+  }) => (
+    <button
+      aria-label={`Ajouter ${product.title} au panier`}
+      onClick={() => onAddToCart?.(product)}
+    >
+      Ajouter
+    </button>
+  ),
 }))
 
 describe('ProductCard', () => {
@@ -77,9 +95,9 @@ describe('ProductCard', () => {
     expect(onAdd).toHaveBeenCalledWith(mockProduct)
   })
 
-  it('does not render add to cart button without handler', () => {
+  it('renders add to cart button without handler', () => {
     render(<ProductCard product={mockProduct} />)
-    expect(screen.queryByRole('button')).toBeNull()
+    expect(screen.getByRole('button', { name: /ajouter.*panier/i })).toBeInTheDocument()
   })
 
   it('renders placeholder image when imageUrl is null', () => {
