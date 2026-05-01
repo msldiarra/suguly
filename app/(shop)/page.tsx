@@ -4,6 +4,8 @@ import { getProducts } from '@/lib/products'
 import { ProductCard } from '@/components/product/ProductCard'
 import { TrustBanner } from '@/components/ui/TrustBanner'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Suguly — E-commerce Bamako | Livraison rapide, Orange Money',
   description:

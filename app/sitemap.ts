@@ -1,6 +1,8 @@
 import type { MetadataRoute } from 'next'
 import { prisma } from '@/lib/db'
 
+export const dynamic = 'force-dynamic'
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://suguly.com'
 
 const CATEGORIES = ['electronique', 'mode', 'maison', 'beaute', 'divers']
