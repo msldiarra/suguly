@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { getCurrentUser } from '@/lib/current-user'
 import { getShopperProfile, listShopperOrders } from '@/lib/shopper-db'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   try {
     const currentUser = await getCurrentUser()

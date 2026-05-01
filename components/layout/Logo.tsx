@@ -7,7 +7,7 @@ interface LogoProps {
   imgClassName?: string
 }
 
-const SIZE_MAP = {
+const SIZE_MAP: Record<string, { width: number; height: number; mobileScale?: number }> = {
   xs: { width: 72, height: 22 },
   sm: { width: 88, height: 27 },
   md: { width: 140, height: 43, mobileScale: 0.9 },
