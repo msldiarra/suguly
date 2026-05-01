@@ -81,13 +81,7 @@ function parseArgs(): { dbPath: string; confidenceThreshold: number } {
   return { dbPath, confidenceThreshold: confidence }
 }
 
-function getTargetDbPath(): string {
-  const url = process.env.DATABASE_URL
-  if (!url?.startsWith('file:')) {
-    throw new Error('DATABASE_URL must use the SQLite file: format')
-  }
-  return url.slice('file:'.length)
-}
+import { prisma } from '../lib/db'
 
 async function main() {
   const { dbPath, confidenceThreshold } = parseArgs()
@@ -101,7 +95,6 @@ async function main() {
   fs.mkdirSync(IMAGES_DIR, { recursive: true })
 
   const sg = new Database(dbPath, { readonly: true })
-  const targetDb = new Database(getTargetDbPath())
 
   const products = sg
     .prepare(
@@ -150,34 +143,20 @@ async function main() {
         confidence,
       }
 
-      const existing = targetDb.prepare(`SELECT id FROM "Product" WHERE "slug" = ?`).get(row.slug) as { id: number } | undefined
+      const existing = await prisma.product.findUnique({
+        where: { slug: row.slug }
+      })
+
       if (existing) {
-        targetDb.prepare(`
-          UPDATE "Product"
-          SET "sheetgenId" = ?, "title" = ?, "description" = ?, "basePrice" = ?, "price" = ?, "currency" = ?, "brand" = ?,
-              "category" = ?, "categoryHierarchy" = ?, "tags" = ?, "colors" = ?, "materials" = ?, "features" = ?,
-              "metaDescription" = ?, "slug" = ?, "seoKeywords" = ?, "imageUrl" = ?, "isActive" = ?, "confidence" = ?,
-              "updatedAt" = CURRENT_TIMESTAMP
-          WHERE "slug" = ?
-        `).run(
-          data.sheetgenId, data.title, data.description, data.basePrice, data.price, data.currency, data.brand,
-          data.category, data.categoryHierarchy, data.tags, data.colors, data.materials, data.features,
-          data.metaDescription, data.slug, data.seoKeywords, data.imageUrl, data.isActive ? 1 : 0, data.confidence,
-          row.slug
-        )
+        await prisma.product.update({
+          where: { slug: row.slug },
+          data
+        })
         stats.updated++
       } else {
-        targetDb.prepare(`
-          INSERT INTO "Product" (
-            "sheetgenId", "title", "description", "basePrice", "price", "currency", "brand", "category",
-            "categoryHierarchy", "tags", "colors", "materials", "features", "metaDescription", "slug",
-            "seoKeywords", "imageUrl", "isActive", "confidence", "createdAt", "updatedAt"
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-        `).run(
-          data.sheetgenId, data.title, data.description, data.basePrice, data.price, data.currency, data.brand,
-          data.category, data.categoryHierarchy, data.tags, data.colors, data.materials, data.features,
-          data.metaDescription, data.slug, data.seoKeywords, data.imageUrl, data.isActive ? 1 : 0, data.confidence
-        )
+        await prisma.product.create({
+          data
+        })
         stats.created++
       }
     } catch (err) {
@@ -187,7 +166,6 @@ async function main() {
   }
 
   sg.close()
-  targetDb.close()
 
   console.log(`\n✅ Import complete:`)
   console.log(`   ${stats.created} créés`)
