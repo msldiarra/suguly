@@ -90,11 +90,11 @@ export async function listShopperAssignees(): Promise<ShopperAssignee[]> {
   `
 
   const workloadRows = await prisma.$queryRaw<Array<{ assignedShopperId: number; activeOrders: number }>>`
-    SELECT assignedShopperId, COUNT(*) as activeOrders
+    SELECT "assignedShopperId", COUNT(*) as "activeOrders"
     FROM "Order"
-    WHERE assignedShopperId IS NOT NULL
-      AND orderStatus IN ('NEW', 'PREPARING', 'READY', 'DELIVERING')
-    GROUP BY assignedShopperId
+    WHERE "assignedShopperId" IS NOT NULL
+      AND "orderStatus" IN ('NEW', 'PREPARING', 'READY', 'DELIVERING')
+    GROUP BY "assignedShopperId"
   `
 
   const workload = new Map(workloadRows.map((row) => [row.assignedShopperId, Number(row.activeOrders)]))
@@ -114,10 +114,10 @@ export async function listShopperAssignees(): Promise<ShopperAssignee[]> {
 export async function getShopperProfile(customerId: number, fallbackName: string | null, phone: string): Promise<ShopperProfile> {
   const rows = await prisma.$queryRaw<Array<{ completed: number; revenue: number | null }>>`
     SELECT
-      COUNT(CASE WHEN orderStatus = 'DELIVERED' AND DATE(updatedAt) = DATE('now') THEN 1 END) as completed,
-      SUM(CASE WHEN orderStatus = 'DELIVERED' AND DATE(updatedAt) = DATE('now') THEN total - deliveryFee ELSE 0 END) as revenue
+      COUNT(CASE WHEN "orderStatus" = 'DELIVERED' AND DATE("updatedAt") = CURRENT_DATE THEN 1 END) as completed,
+      SUM(CASE WHEN "orderStatus" = 'DELIVERED' AND DATE("updatedAt") = CURRENT_DATE THEN total - "deliveryFee" ELSE 0 END) as revenue
     FROM "Order"
-    WHERE assignedShopperId = ${customerId}
+    WHERE "assignedShopperId" = ${customerId}
   `
 
   const stats = rows[0] ?? { completed: 0, revenue: 0 }
@@ -140,25 +140,25 @@ export async function getShopperProfile(customerId: number, fallbackName: string
 export async function listShopperOrders(role: AppUserRole, currentUserId: number): Promise<ShopperOrder[]> {
   const rows = await prisma.$queryRaw<OrderRow[]>`
     SELECT
-      o.id as orderId,
-      o.orderNumber,
-      o.customerId,
-      c.name as customerName,
-      c.phone as customerPhone,
-      o.guestName,
-      o.guestPhone,
+      o.id as "orderId",
+      o."orderNumber",
+      o."customerId",
+      c.name as "customerName",
+      c.phone as "customerPhone",
+      o."guestName",
+      o."guestPhone",
       o.quartier,
       o.address,
-      o.deliveryFee,
+      o."deliveryFee",
       o.total,
-      o.paymentMethod,
-      o.paymentStatus,
-      o.orderStatus,
-      o.createdAt,
-      o.assignedShopperId
+      o."paymentMethod",
+      o."paymentStatus",
+      o."orderStatus",
+      o."createdAt",
+      o."assignedShopperId"
     FROM "Order" o
-    LEFT JOIN "Customer" c ON c.id = o.customerId
-    ORDER BY o.createdAt DESC
+    LEFT JOIN "Customer" c ON c.id = o."customerId"
+    ORDER BY o."createdAt" DESC
   `
 
   if (rows.length === 0) return []
@@ -166,12 +166,12 @@ export async function listShopperOrders(role: AppUserRole, currentUserId: number
   const orderNumbers = rows.map((row) => row.orderNumber)
   const itemRows = await prisma.$queryRawUnsafe<OrderItemRow[]>(
     `
-      SELECT oi.id, o.orderNumber, p.title, oi.quantity, oi.unitPrice, oi.available
+      SELECT oi.id, o."orderNumber", p.title, oi.quantity, oi."unitPrice", oi.available
       FROM "OrderItem" oi
-      INNER JOIN "Order" o ON o.id = oi.orderId
-      INNER JOIN "Product" p ON p.id = oi.productId
-      WHERE o.orderNumber IN (${orderNumbers.map(() => '?').join(', ')})
-      ORDER BY oi.orderId ASC, oi.id ASC
+      INNER JOIN "Order" o ON o.id = oi."orderId"
+      INNER JOIN "Product" p ON p.id = oi."productId"
+      WHERE o."orderNumber" IN (${orderNumbers.map(() => '?').join(', ')})
+      ORDER BY oi."orderId" ASC, oi.id ASC
     `,
     ...orderNumbers
   )
@@ -185,12 +185,12 @@ export async function listShopperOrders(role: AppUserRole, currentUserId: number
 
   const noteRows = await prisma.$queryRawUnsafe<OrderNoteRow[]>(
     `
-      SELECT o.orderNumber, n.id as noteId, n.body, n.createdAt, c.name as authorName
+      SELECT o."orderNumber", n.id as "noteId", n.body, n."createdAt", c.name as "authorName"
       FROM "OrderNote" n
-      INNER JOIN "Order" o ON o.id = n.orderId
-      LEFT JOIN "Customer" c ON c.id = n.authorId
-      WHERE o.orderNumber IN (${orderNumbers.map(() => '?').join(', ')})
-      ORDER BY n.createdAt DESC, n.id DESC
+      INNER JOIN "Order" o ON o.id = n."orderId"
+      LEFT JOIN "Customer" c ON c.id = n."authorId"
+      WHERE o."orderNumber" IN (${orderNumbers.map(() => '?').join(', ')})
+      ORDER BY n."createdAt" DESC, n.id DESC
     `,
     ...orderNumbers
   )
@@ -255,8 +255,8 @@ export async function getShopperOrder(orderNumber: string, role: AppUserRole, cu
 export async function assignOrderToShopper(orderNumber: string, shopperCustomerId: number) {
   await prisma.$executeRaw`
     UPDATE "Order"
-    SET assignedShopperId = ${shopperCustomerId}, updatedAt = CURRENT_TIMESTAMP
-    WHERE orderNumber = ${orderNumber}
+    SET "assignedShopperId" = ${shopperCustomerId}, "updatedAt" = CURRENT_TIMESTAMP
+    WHERE "orderNumber" = ${orderNumber}
   `
 }
 
@@ -264,7 +264,7 @@ async function getOrderNumericId(orderNumber: string) {
   const rows = await prisma.$queryRaw<Array<{ id: number }>>`
     SELECT id
     FROM "Order"
-    WHERE orderNumber = ${orderNumber}
+    WHERE "orderNumber" = ${orderNumber}
     LIMIT 1
   `
   return rows[0]?.id ?? null
@@ -275,18 +275,18 @@ export async function addOrderNote(orderNumber: string, body: string, authorId: 
   if (!orderId) throw new Error('ORDER_NOT_FOUND')
 
   await prisma.$executeRaw`
-    INSERT INTO "OrderNote" (orderId, authorId, body, createdAt)
+    INSERT INTO "OrderNote" ("orderId", "authorId", "body", "createdAt")
     VALUES (${orderId}, ${authorId}, ${body}, CURRENT_TIMESTAMP)
   `
 }
 
 export async function setOrderItemAvailability(orderNumber: string, itemId: number, available: boolean, authorId: number) {
   const rows = await prisma.$queryRaw<Array<{ orderId: number; title: string; available: number }>>`
-    SELECT oi.orderId, p.title, oi.available
+    SELECT oi."orderId", p.title, oi.available
     FROM "OrderItem" oi
-    INNER JOIN "Order" o ON o.id = oi.orderId
-    INNER JOIN "Product" p ON p.id = oi.productId
-    WHERE o.orderNumber = ${orderNumber} AND oi.id = ${itemId}
+    INNER JOIN "Order" o ON o.id = oi."orderId"
+    INNER JOIN "Product" p ON p.id = oi."productId"
+    WHERE o."orderNumber" = ${orderNumber} AND oi.id = ${itemId}
     LIMIT 1
   `
 
@@ -307,9 +307,9 @@ export async function setOrderItemAvailability(orderNumber: string, itemId: numb
 
 export async function updateShopperOrderStatus(orderNumber: string, nextStatus: string, actingUserId: number, role: AppUserRole) {
   const rows = await prisma.$queryRaw<Array<{ orderStatus: string; assignedShopperId: number | null }>>`
-    SELECT orderStatus, assignedShopperId
+    SELECT "orderStatus", "assignedShopperId"
     FROM "Order"
-    WHERE orderNumber = ${orderNumber}
+    WHERE "orderNumber" = ${orderNumber}
     LIMIT 1
   `
 
@@ -323,12 +323,12 @@ export async function updateShopperOrderStatus(orderNumber: string, nextStatus: 
   await prisma.$executeRaw`
     UPDATE "Order"
     SET
-      orderStatus = ${nextStatus},
-      assignedShopperId = CASE
-        WHEN assignedShopperId IS NULL AND ${nextStatus} = 'PREPARING' THEN ${actingUserId}
-        ELSE assignedShopperId
+      "orderStatus" = ${nextStatus},
+      "assignedShopperId" = CASE
+        WHEN "assignedShopperId" IS NULL AND ${nextStatus} = 'PREPARING' THEN ${actingUserId}
+        ELSE "assignedShopperId"
       END,
-      updatedAt = CURRENT_TIMESTAMP
-    WHERE orderNumber = ${orderNumber}
+      "updatedAt" = CURRENT_TIMESTAMP
+    WHERE "orderNumber" = ${orderNumber}
   `
 }

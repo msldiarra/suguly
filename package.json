@@ -15,7 +15,8 @@
     "db:seed": "tsx scripts/seed.ts",
     "db:backup": "node scripts/backup-db.mjs",
     "db:studio": "prisma studio",
-    "import:sheetgen": "tsx scripts/import-sheetgen.ts"
+    "import:sheetgen": "tsx scripts/import-sheetgen.ts",
+    "transfer:users": "tsx scripts/transfer-users.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
