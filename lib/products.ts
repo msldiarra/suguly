@@ -20,7 +20,7 @@ export interface ProductListResult {
 }
 
 export async function getProducts(filters: ProductFilters = {}): Promise<ProductListResult> {
-  const { category, search, minPrice, maxPrice, sortBy = 'default', page = 1, limit = 20 } = filters
+  const { category, search, minPrice, maxPrice, sortBy = 'default', page = 1, limit = 40 } = filters
   const skip = (page - 1) * limit
 
   const where = buildWhereClause({ category, search, minPrice, maxPrice, colors: filters.colors })

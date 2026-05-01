@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { getProducts } from '@/lib/products'
 import { ProductGrid } from '@/components/product/ProductGrid'
 
@@ -44,6 +45,37 @@ export default async function CataloguePage({ searchParams }: CataloguePageProps
       </div>
 
       <ProductGrid products={result.products} columns={4} />
+
+      {/* Pagination */}
+      {result.totalPages > 1 && (
+        <div className="mt-12 flex items-center justify-center gap-3">
+          <Link
+            href={{
+              query: { ...params, page: Math.max(1, result.page - 1) }
+            }}
+            className={[
+              'px-4 py-2 rounded-xl border border-[#D1D1D1] text-sm font-semibold transition-all',
+              result.page <= 1 ? 'opacity-30 pointer-events-none' : 'hover:bg-[#F7F7F8]'
+            ].join(' ')}
+          >
+            ← Précédent
+          </Link>
+          <span className="text-xs font-bold text-text-light uppercase tracking-widest">
+            Page {result.page} sur {result.totalPages}
+          </span>
+          <Link
+            href={{
+              query: { ...params, page: Math.min(result.totalPages, result.page + 1) }
+            }}
+            className={[
+              'px-4 py-2 rounded-xl border border-[#D1D1D1] text-sm font-semibold transition-all',
+              result.page >= result.totalPages ? 'opacity-30 pointer-events-none' : 'hover:bg-[#F7F7F8]'
+            ].join(' ')}
+          >
+            Suivant →
+          </Link>
+        </div>
+      )}
 
       {result.total === 0 && q && (
         <div className="text-center py-8 text-text-light">

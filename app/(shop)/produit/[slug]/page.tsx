@@ -134,7 +134,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
               )}
             </div>
 
-            {/* Colors */}
+            {/* Colors selection hidden for now to avoid confusion */}
+            {/* 
             {colors.length > 0 && (
               <div className="flex items-center gap-3 mb-6">
                 <span className="text-xs uppercase tracking-widest font-semibold text-text">Coloris :</span>
@@ -150,6 +151,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 </div>
               </div>
             )}
+            */}
 
             <AddToCartButton product={product} />
 

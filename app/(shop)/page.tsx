@@ -39,7 +39,7 @@ export default async function HomePage() {
             Électronique, mode, beauté et plus — paiement Orange Money, livraison rapide à Bamako.
           </p>
           <Link
-            href="/categorie/electronique"
+            href="/catalogue"
             className="inline-block px-7 py-3 bg-text text-white rounded-xl font-medium text-sm hover:bg-black transition-colors"
           >
             Explorer les produits
