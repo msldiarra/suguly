@@ -22,6 +22,12 @@ export const metadata: Metadata = {
     locale: 'fr_FR',
     type: 'website',
   },
+  themeColor: '#1A1A1A',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Suguly',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
