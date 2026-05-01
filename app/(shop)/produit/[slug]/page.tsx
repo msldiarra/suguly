@@ -43,6 +43,8 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   }
 }
 
+import { ProductTabs } from '@/components/product/ProductTabs'
+
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params
   const product = await getProductBySlug(slug)
@@ -191,67 +193,5 @@ export default async function ProductPage({ params }: ProductPageProps) {
         )}
       </div>
     </>
-  )
-}
-
-// Server-rendered tabs (no interactivity needed for content)
-function ProductTabs({
-  description,
-  features,
-  materials,
-  brand,
-  catLabel,
-}: {
-  description: string | null
-  features: string[]
-  materials: string[]
-  brand: string | null
-  catLabel: string
-}) {
-  return (
-    <div>
-      <div className="border-b border-[#D1D1D1] mb-8 flex gap-2">
-        <span className="py-3 px-6 text-xs uppercase tracking-widest font-bold text-text border-b-2 border-text -mb-px">
-          Description
-        </span>
-        {features.length > 0 && (
-          <span className="py-3 px-6 text-xs uppercase tracking-widest font-semibold text-text-light cursor-pointer hover:text-text transition-colors">
-            Caractéristiques
-          </span>
-        )}
-      </div>
-
-      {description && (
-        <p className="text-sm leading-relaxed text-text mb-5">{description}</p>
-      )}
-
-      {features.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-5">
-          {features.map((f, i) => (
-            <div key={i} className="flex items-start gap-2 bg-[#F7F7F8] border border-[#E5E5E5] rounded-lg p-3">
-              <span className="text-[#16A34A] text-sm mt-0.5">✓</span>
-              <span className="text-sm text-text">{f}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {(brand || catLabel || materials.length > 0) && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {([
-            brand ? (['Marque', brand] as [string, string]) : null,
-            catLabel ? (['Catégorie', catLabel] as [string, string]) : null,
-            materials.length > 0 ? (['Matière', materials.join(', ')] as [string, string]) : null,
-          ] as ([string, string] | null)[])
-            .filter((x): x is [string, string] => x !== null)
-            .map(([k, v]) => (
-              <div key={k} className="bg-white border border-[#D1D1D1] rounded-xl p-4 shadow-sm">
-                <p className="text-[10px] font-bold text-text-light uppercase tracking-widest mb-1.5">{k}</p>
-                <p className="text-sm font-semibold text-text leading-tight">{v}</p>
-              </div>
-            ))}
-        </div>
-      )}
-    </div>
   )
 }
