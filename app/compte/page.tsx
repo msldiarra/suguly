@@ -412,20 +412,22 @@ export default function ComptePage() {
           <p className="mt-1 text-sm text-text-light">
             Consultez les commandes à traiter, leur détail et leur progression.
           </p>
-          <Link
-            href="/shopper"
-            className="mt-4 inline-flex rounded-xl bg-text px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-black"
-          >
-            Ouvrir le dashboard shopper
-          </Link>
-          {customerInfo.role === 'ADMIN' && (
+          <div className="flex flex-wrap gap-3 mt-4">
             <Link
-              href="/admin/commandes"
-              className="mt-3 inline-flex rounded-xl border border-[#D1D1D1] px-4 py-3 text-sm font-bold text-text transition-colors hover:bg-[#F7F7F8]"
+              href="/shopper"
+              className="inline-flex rounded-xl bg-text px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-black"
             >
-              Ouvrir la supervision admin
+              Ouvrir le dashboard shopper
             </Link>
-          )}
+            {customerInfo.role === 'ADMIN' && (
+              <Link
+                href="/admin/commandes"
+                className="inline-flex rounded-xl border border-[#D1D1D1] px-4 py-3 text-sm font-bold text-text transition-colors hover:bg-[#F7F7F8]"
+              >
+                Ouvrir la supervision admin
+              </Link>
+            )}
+          </div>
         </div>
       )}
 
