@@ -1,11 +1,9 @@
-'use client'
-
 import Link from 'next/link'
-import { useState } from 'react'
 import { formatPrice } from '@/lib/format'
 import type { Product } from '@prisma/client'
 import { ProductImg } from './ProductImg'
 import { Badge } from '../ui/Badge'
+import { AddToCartCardButton } from './AddToCartCardButton'
 
 interface ProductCardProps {
   product: Product
@@ -26,26 +24,15 @@ function safeParseJson<T>(val: string | null): T | null {
 }
 
 export function ProductCard({ product, compact = false, onAddToCart }: ProductCardProps) {
-  const [added, setAdded] = useState(false)
   const badge = getFirstBadge(product)
-
-  function handleAdd(e: React.MouseEvent) {
-    e.preventDefault()
-    e.stopPropagation()
-    if (onAddToCart) {
-      onAddToCart(product)
-      setAdded(true)
-      setTimeout(() => setAdded(false), 1500)
-    }
-  }
 
   return (
     <Link
       href={`/produit/${product.slug}`}
-      className="group bg-white rounded-2xl overflow-hidden border border-bg-card hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 flex flex-col"
+      className="group bg-white rounded-xl overflow-hidden border border-[#D1D1D1] hover:border-text transition-all duration-300 flex flex-col hover:shadow-md"
     >
       {/* Image area */}
-      <div className={`relative bg-bg-card flex items-center justify-center ${compact ? 'p-3' : 'p-4'}`}>
+      <div className={`relative bg-white flex items-center justify-center ${compact ? 'p-3' : 'p-4'}`}>
         <ProductImg
           title={product.title}
           category={product.category}
@@ -60,32 +47,22 @@ export function ProductCard({ product, compact = false, onAddToCart }: ProductCa
       </div>
 
       {/* Info */}
-      <div className={`flex flex-col flex-1 gap-1.5 ${compact ? 'p-2.5 pb-3' : 'p-3.5 pb-4'}`}>
+      <div className={`flex flex-col flex-1 gap-1.5 bg-white border-t border-[#D1D1D1] ${compact ? 'p-3 pb-3.5' : 'p-4 pb-5'}`}>
         <p
-          className={`text-text font-semibold leading-snug line-clamp-2 ${compact ? 'text-xs' : 'text-sm'}`}
+          className={`text-text font-medium leading-snug line-clamp-2 ${compact ? 'text-xs h-8' : 'text-sm h-10'}`}
         >
           {product.title}
         </p>
 
-        <div className={`flex items-baseline gap-1.5 mt-auto ${compact ? '' : 'mt-1'}`}>
+        <div className={`flex items-baseline gap-1.5 mt-auto ${compact ? '' : 'mt-1.5'}`}>
           <span
-            className={`font-head font-extrabold text-primary ${compact ? 'text-sm' : 'text-base'}`}
+            className={`font-semibold text-text ${compact ? 'text-sm' : 'text-[15px]'}`}
           >
             {formatPrice(product.price)}
           </span>
         </div>
 
-        {onAddToCart && (
-          <button
-            onClick={handleAdd}
-            aria-label={`Ajouter ${product.title} au panier`}
-            className={`mt-1 py-1.5 px-2.5 rounded-lg text-white text-xs font-bold transition-colors flex items-center justify-center gap-1 ${
-              added ? 'bg-emerald-600' : 'bg-primary hover:bg-primary-dark'
-            }`}
-          >
-            {added ? '✓ Ajouté !' : '+ Panier'}
-          </button>
-        )}
+        <AddToCartCardButton product={product} onAddToCart={onAddToCart} />
       </div>
     </Link>
   )

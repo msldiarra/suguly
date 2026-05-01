@@ -1,6 +1,15 @@
-import { PrismaClient } from '@prisma/client'
+import Database from 'better-sqlite3'
+import { buildStoredPricing } from '../lib/pricing'
 
-const prisma = new PrismaClient()
+function getTargetDbPath(): string {
+  const url = process.env.DATABASE_URL
+  if (!url?.startsWith('file:')) {
+    throw new Error('DATABASE_URL must use the SQLite file: format')
+  }
+  return url.slice('file:'.length)
+}
+
+const db = new Database(getTargetDbPath())
 
 const products = [
   {
@@ -354,12 +363,38 @@ async function main() {
   let updated = 0
 
   for (const product of products) {
-    const existing = await prisma.product.findUnique({ where: { slug: product.slug } })
+    const data = {
+      ...product,
+      ...buildStoredPricing(product.price),
+    }
+    const existing = db.prepare(`SELECT id FROM "Product" WHERE "slug" = ?`).get(product.slug) as { id: number } | undefined
     if (existing) {
-      await prisma.product.update({ where: { slug: product.slug }, data: product })
+      db.prepare(`
+        UPDATE "Product"
+        SET "title" = ?, "description" = ?, "basePrice" = ?, "price" = ?, "currency" = ?, "brand" = ?,
+            "category" = ?, "categoryHierarchy" = ?, "tags" = ?, "colors" = ?, "materials" = ?, "features" = ?,
+            "metaDescription" = ?, "slug" = ?, "seoKeywords" = ?, "imageUrl" = ?, "isActive" = ?, "confidence" = ?,
+            "updatedAt" = CURRENT_TIMESTAMP
+        WHERE "slug" = ?
+      `).run(
+        data.title, data.description, data.basePrice, data.price, data.currency, data.brand,
+        data.category, data.categoryHierarchy, data.tags, data.colors, data.materials, data.features,
+        data.metaDescription, data.slug, data.seoKeywords, data.imageUrl, data.isActive ? 1 : 0, data.confidence,
+        product.slug
+      )
       updated++
     } else {
-      await prisma.product.create({ data: product })
+      db.prepare(`
+        INSERT INTO "Product" (
+          "title", "description", "basePrice", "price", "currency", "brand", "category", "categoryHierarchy",
+          "tags", "colors", "materials", "features", "metaDescription", "slug", "seoKeywords", "imageUrl",
+          "isActive", "confidence", "createdAt", "updatedAt"
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `).run(
+        data.title, data.description, data.basePrice, data.price, data.currency, data.brand,
+        data.category, data.categoryHierarchy, data.tags, data.colors, data.materials, data.features,
+        data.metaDescription, data.slug, data.seoKeywords, data.imageUrl, data.isActive ? 1 : 0, data.confidence
+      )
       created++
     }
   }
@@ -372,4 +407,4 @@ main()
     console.error(e)
     process.exit(1)
   })
-  .finally(() => prisma.$disconnect())
+  .finally(() => db.close())

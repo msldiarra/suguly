@@ -13,6 +13,7 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx scripts/seed.ts",
+    "db:backup": "node scripts/backup-db.mjs",
     "db:studio": "prisma studio",
     "import:sheetgen": "tsx scripts/import-sheetgen.ts"
   },
