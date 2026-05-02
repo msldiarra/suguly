@@ -4,6 +4,8 @@ import type { Product } from '@prisma/client'
 import { ProductImg } from './ProductImg'
 import { Badge } from '../ui/Badge'
 import { AddToCartCardButton } from './AddToCartCardButton'
+import { Stars } from '../ui/Stars'
+import { getProductRating } from '@/lib/reviews'
 
 interface ProductCardProps {
   product: Product
@@ -53,6 +55,13 @@ export function ProductCard({ product, compact = false, onAddToCart }: ProductCa
         >
           {product.title}
         </p>
+        
+        <div className="flex items-center gap-2">
+          <Stars rating={getProductRating(product.id).rating} />
+          <span className="text-[10px] text-text-light font-medium">
+            ({getProductRating(product.id).count})
+          </span>
+        </div>
 
         <div className={`flex items-baseline gap-1.5 mt-auto ${compact ? '' : 'mt-1.5'}`}>
           <span

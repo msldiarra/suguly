@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/Badge'
 import { ProductImg } from '@/components/product/ProductImg'
 import { ProductCard } from '@/components/product/ProductCard'
 import { AddToCartButton } from './AddToCartButton'
+import { Stars } from '@/components/ui/Stars'
+import { getProductRating } from '@/lib/reviews'
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>
@@ -57,6 +59,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const tags = safeParseJson<string[]>(product.tags) ?? []
   const badge = tags.find((t) => t === 'Nouveau' || t === 'Populaire') ?? null
   const catLabel = getCategoryLabel(product.category)
+  const { rating, count, reviews } = getProductRating(product.id)
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://suguly.com'
 
@@ -111,6 +114,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
         },
       },
     },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: rating.toFixed(1),
+      reviewCount: count.toString(),
+      bestRating: '5',
+      worstRating: '1',
+    },
+    review: reviews.map((r) => ({
+      '@type': 'Review',
+      author: { '@type': 'Person', name: r.name },
+      datePublished: r.date,
+      reviewBody: r.body,
+      reviewRating: { '@type': 'Rating', ratingValue: r.rating.toString() },
+    })),
     image: product.imageUrl ?? undefined,
   }
 
@@ -151,6 +168,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <h1 className="font-head text-2xl sm:text-3xl font-semibold text-text leading-tight mb-3">
               {product.title}
             </h1>
+
+            {/* Stars */}
+            <div className="flex items-center gap-2.5 mb-2">
+              <Stars rating={rating} />
+              <span className="text-xs text-text-light font-medium uppercase tracking-widest">
+                {rating.toFixed(1)} · {count} avis
+              </span>
+            </div>
 
             {/* Price */}
             <div className="flex items-baseline gap-2.5 my-4">
@@ -219,6 +244,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
           materials={materials}
           brand={product.brand}
           catLabel={catLabel}
+          rating={rating}
+          reviewsCount={count}
+          reviews={reviews}
         />
 
         {/* Similar products */}
