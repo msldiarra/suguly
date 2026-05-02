@@ -7,7 +7,6 @@ import { calcSubtotal } from '@/lib/cart'
 import { formatPrice } from '@/lib/format'
 import { getDeliveryFee, QUARTIERS } from '@/lib/delivery'
 import { isMalianPhone } from '@/lib/validate'
-import { generateOrderNumber } from '@/lib/orders'
 
 interface FormState {
   nom: string
@@ -99,8 +98,11 @@ export default function CheckoutPage() {
     return Object.keys(e).length === 0
   }
 
+  const [apiError, setApiError] = useState<string | null>(null)
+
   const handleConfirm = async () => {
     setSubmitting(true)
+    setApiError(null)
     try {
       const res = await fetch('/api/orders', {
         method: 'POST',
@@ -116,42 +118,33 @@ export default function CheckoutPage() {
         }),
       })
 
-      if (res.ok) {
-        const { order, paymentUrl } = await res.json()
-        
-        localStorage.setItem(
-          'suguly_last_order',
-          JSON.stringify({ ...order, nom: form.nom, tel: form.tel })
-        )
-        if (paymentUrl) {
-          window.location.href = paymentUrl
-        } else {
-          // Clear cart only on normal confirmation
-          localStorage.removeItem('suguly_cart')
-          window.dispatchEvent(new Event('cart-updated'))
-          router.push(`/confirmation/${order.orderNumber}`)
-        }
-      } else {
-        // Fallback: create a local order number for demo
-        const orderNumber = generateOrderNumber()
-        localStorage.removeItem('suguly_cart')
-        window.dispatchEvent(new Event('cart-updated'))
-        localStorage.setItem(
-          'suguly_last_order',
-          JSON.stringify({ orderNumber, nom: form.nom, tel: form.tel, total })
-        )
-        router.push(`/confirmation/${orderNumber}`)
+      const data = await res.json()
+
+      if (!res.ok) {
+        // Server returned an error (including OM initiation failure)
+        setApiError(data.error || 'Une erreur est survenue. Veuillez réessayer.')
+        return
       }
-    } catch {
-      // Offline fallback
-      const orderNumber = generateOrderNumber()
-      localStorage.removeItem('suguly_cart')
-      window.dispatchEvent(new Event('cart-updated'))
+
+      const { order, paymentUrl } = data
+
       localStorage.setItem(
         'suguly_last_order',
-        JSON.stringify({ orderNumber, nom: form.nom, tel: form.tel, total })
+        JSON.stringify({ ...order, nom: form.nom, tel: form.tel })
       )
-      router.push(`/confirmation/${orderNumber}`)
+
+      if (paymentUrl) {
+        // Redirect to Orange Money gateway — do NOT clear the cart yet
+        // Cart will be cleared by the confirmation page once payment is verified
+        window.location.href = paymentUrl
+      } else {
+        // Cash on delivery — clear cart and go to confirmation
+        localStorage.removeItem('suguly_cart')
+        window.dispatchEvent(new Event('cart-updated'))
+        router.push(`/confirmation/${order.orderNumber}`)
+      }
+    } catch {
+      setApiError('Impossible de contacter le serveur. Vérifiez votre connexion et réessayez.')
     } finally {
       setSubmitting(false)
     }
@@ -279,6 +272,17 @@ export default function CheckoutPage() {
                   </svg>
                   <p className="text-sm text-[#E11D48] font-medium leading-relaxed">
                     Le paiement a été annulé, vous pouvez réessayer ou choisir de payer à la livraison.
+                  </p>
+                </div>
+              )}
+
+              {apiError && (
+                <div className="mb-6 p-4 bg-[#FFF1F2] border border-[#FFE4E6] rounded-xl flex gap-3 items-start">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E11D48" strokeWidth="2.5" strokeLinecap="round" className="flex-shrink-0 mt-0.5">
+                    <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  <p className="text-sm text-[#E11D48] font-medium leading-relaxed">
+                    {apiError}
                   </p>
                 </div>
               )}

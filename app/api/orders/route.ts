@@ -95,8 +95,15 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ order, paymentUrl }, { status: 201 })
       } catch (omError) {
         console.error('[POST /api/orders] Orange Money initiation failed:', omError)
-        // We might still want to return the order but indicate payment initiation failed
-        return NextResponse.json({ order, error: 'Échec initialisation Orange Money' }, { status: 201 })
+        // Mark the order as failed so it doesn't block future attempts
+        await prisma.order.update({
+          where: { id: order.id },
+          data: { paymentStatus: 'PAYMENT_FAILED', orderStatus: 'CANCELLED' },
+        })
+        return NextResponse.json(
+          { error: 'Échec de la connexion au service Orange Money. Veuillez réessayer.' },
+          { status: 502 }
+        )
       }
     }
 
