@@ -31,8 +31,8 @@ interface CreatePaymentArgs {
 const AUTH_HEADER = process.env.OM_AUTH_HEADER || ''
 const MERCHANT_KEY = process.env.OM_MERCHANT_KEY || ''
 const API_BASE_URL = process.env.OM_API_BASE_URL || 'https://api.orange.com'
-const OM_WEBPAY_PATH = process.env.OM_WEBPAY_PATH || '/orange-money-webpay/v1/webpayment'
-const OM_CURRENCY = process.env.OM_CURRENCY || 'XOF'
+const OM_WEBPAY_PATH = process.env.OM_WEBPAY_PATH || '/orange-money-webpay/dev/v1/webpayment'
+const OM_CURRENCY = process.env.OM_CURRENCY || 'OUV'
 const APP_BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
 // Simple in-memory cache for the auth token

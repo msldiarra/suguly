@@ -1,11 +1,10 @@
 import type { MetadataRoute } from 'next'
 import { prisma } from '@/lib/db'
+import { CATEGORIES } from '@/lib/categories'
 
 export const dynamic = 'force-dynamic'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://suguly.com'
-
-const CATEGORIES = ['electronique', 'mode', 'maison', 'beaute', 'divers']
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const products = await prisma.product.findMany({
@@ -16,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: siteUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
     ...CATEGORIES.map((cat) => ({
-      url: `${siteUrl}/categorie/${cat}`,
+      url: `${siteUrl}/categorie/${cat.id}`,
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.8,
