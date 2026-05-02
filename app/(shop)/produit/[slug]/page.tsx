@@ -58,6 +58,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const badge = tags.find((t) => t === 'Nouveau' || t === 'Populaire') ?? null
   const catLabel = getCategoryLabel(product.category)
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://suguly.com'
+
   // JSON-LD structured data (Schema.org Product)
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -70,7 +72,44 @@ export default async function ProductPage({ params }: ProductPageProps) {
       price: product.price,
       priceCurrency: product.currency,
       availability: 'https://schema.org/InStock',
+      url: `${siteUrl}/produit/${product.slug}`,
       seller: { '@type': 'Organization', name: 'Suguly' },
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        applicableCountry: 'ML',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 2,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/ReturnFeesCustomerPaying',
+      },
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingRate: {
+          '@type': 'MonetaryAmount',
+          value: 1500,
+          currency: product.currency,
+        },
+        shippingDestination: {
+          '@type': 'DefinedRegion',
+          addressCountry: 'ML',
+          addressRegion: ['Bamako'],
+        },
+        deliveryTime: {
+          '@type': 'ShippingDeliveryTime',
+          handlingTime: {
+            '@type': 'QuantitativeValue',
+            minValue: 0,
+            maxValue: 1,
+            unitCode: 'DAY',
+          },
+          transitTime: {
+            '@type': 'QuantitativeValue',
+            minValue: 1,
+            maxValue: 2,
+            unitCode: 'DAY',
+          },
+        },
+      },
     },
     image: product.imageUrl ?? undefined,
   }
