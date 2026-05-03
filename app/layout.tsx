@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import './globals.css'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
@@ -30,10 +31,27 @@ export const metadata: Metadata = {
   },
 }
 
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? 'G-8V6E22ECKS'
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
       <body className="min-h-screen flex flex-col">
+        {/* Google Analytics */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', '${GA_ID}');
+          `}
+        </Script>
+
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
