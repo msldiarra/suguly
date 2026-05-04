@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     'Achetez électronique, mode, beauté et plus. Livraison rapide à Bamako, paiement Orange Money.',
   keywords: ['e-commerce', 'bamako', 'mali', 'orange money', 'livraison'],
   icons: {
-    icon: '/ico.png',
-    apple: '/ico.png',
-    shortcut: '/ico.png',
+    icon: '/logo-suguly-new.svg',
+    apple: '/logo-suguly-new.svg',
+    shortcut: '/logo-suguly-new.svg',
   },
   openGraph: {
     siteName: 'Suguly',
