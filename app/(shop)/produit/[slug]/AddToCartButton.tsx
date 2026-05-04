@@ -69,8 +69,8 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
       <div className="flex flex-col sm:flex-row gap-2.5">
         <button
           onClick={handleAdd}
-          className={`flex-1 py-3 px-6 rounded-xl font-medium text-sm text-white transition-colors ${
-            added ? 'bg-emerald-600' : 'bg-text hover:bg-black'
+          className={`flex-1 py-3 px-6 rounded-xl font-medium text-sm text-white transition-all active:scale-95 ${
+            added ? 'bg-accent shadow-sm' : 'bg-primary hover:bg-primary-dark shadow-md'
           }`}
         >
           {added ? '✓ Ajouté au panier' : 'Ajouter au panier'}

@@ -38,8 +38,8 @@ export function ProductTabs({
             onClick={() => setActiveTab('description')}
             className={`py-2.5 px-4 text-xs sm:text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
               activeTab === 'description'
-                ? 'text-text border-text'
-                : 'text-text-light border-transparent hover:text-text'
+                ? 'text-primary border-primary'
+                : 'text-text-light border-transparent hover:text-primary'
             }`}
           >
             Description
@@ -49,8 +49,8 @@ export function ProductTabs({
               onClick={() => setActiveTab('features')}
               className={`py-2.5 px-4 text-xs sm:text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
                 activeTab === 'features'
-                  ? 'text-text border-text'
-                  : 'text-text-light border-transparent hover:text-text'
+                  ? 'text-primary border-primary'
+                  : 'text-text-light border-transparent hover:text-primary'
               }`}
             >
               Caractéristiques
@@ -60,12 +60,12 @@ export function ProductTabs({
             onClick={() => setActiveTab('reviews')}
             className={`py-2.5 px-4 text-xs sm:text-sm font-medium whitespace-nowrap border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === 'reviews'
-                ? 'text-text border-text'
-                : 'text-text-light border-transparent hover:text-text'
+                ? 'text-primary border-primary'
+                : 'text-text-light border-transparent hover:text-primary'
             }`}
           >
             Avis Clients
-            <span className="bg-primary-light text-primary px-1.5 py-0.5 rounded text-[10px]">{reviewsCount}</span>
+            <span className="bg-primary-light text-primary px-1.5 py-0.5 rounded text-[10px] font-bold">{reviewsCount}</span>
           </button>
         </div>
       </div>

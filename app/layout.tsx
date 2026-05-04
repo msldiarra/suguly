@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     locale: 'fr_FR',
     type: 'website',
   },
-  themeColor: '#1A1A1A',
+  themeColor: '#4F674E',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',

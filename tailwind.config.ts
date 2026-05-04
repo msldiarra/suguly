@@ -10,12 +10,16 @@ const config: Config = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#7A9E8A',
-          dark: '#628071',
-          light: '#EEF4F0',
+          DEFAULT: '#4F674E',
+          dark: '#3D4F3C',
+          light: '#F0F4F0',
+        },
+        accent: {
+          DEFAULT: '#D2AF78',
+          dark: '#B99760',
         },
         bg: {
-          DEFAULT: '#FAF9F6',
+          DEFAULT: '#FDF9F4',
           card: '#FFFFFF',
         },
         text: {

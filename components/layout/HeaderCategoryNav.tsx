@@ -18,8 +18,8 @@ export function HeaderCategoryNav() {
               href={`/categorie/${cat.id}`}
               className={`py-2.5 px-3 sm:px-4 text-xs sm:text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
                 active
-                  ? 'text-text border-text'
-                  : 'text-text-light border-transparent hover:text-text'
+                  ? 'text-primary border-primary'
+                  : 'text-text-light border-transparent hover:text-primary'
               }`}
             >
               {cat.label}

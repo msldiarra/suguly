@@ -5,9 +5,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary: #7A9E8A;
-  --primary-dark: #628071;
-  --primary-light: #EEF4F0;
+  --primary: #4F674E;
+  --primary-dark: #3D4F3C;
+  --primary-light: #F0F4F0;
+  --accent: #D2AF78;
+  --bg-ivoire: #FDF9F4;
   --font-inter: 'Inter', sans-serif;
   --font-outfit: 'Outfit', sans-serif;
 }
@@ -17,7 +19,7 @@
 }
 
 body {
-  background: #FAF9F6;
+  background: var(--bg-ivoire);
   color: #1F1F1F;
   font-family: var(--font-inter);
   -webkit-font-smoothing: antialiased;

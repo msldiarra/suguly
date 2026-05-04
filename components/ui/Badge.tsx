@@ -4,9 +4,9 @@ interface BadgeProps {
 }
 
 const COLORS: Record<string, string> = {
-  Nouveau: 'bg-[#F0F7FF] text-[#2563EB] border border-[#DBEAFE]',
-  Populaire: 'bg-[#F0FDF4] text-[#16A34A] border border-[#DCFCE7]',
-  Promo: 'bg-[#FFF1F2] text-[#E11D48] border border-[#FFE4E6]',
+  Nouveau: 'bg-primary-light text-primary border border-primary/20',
+  Populaire: 'bg-accent/10 text-accent-dark border border-accent/20',
+  Promo: 'bg-rose-50 text-rose-600 border border-rose-100',
 }
 
 export function Badge({ label, className = '' }: BadgeProps) {

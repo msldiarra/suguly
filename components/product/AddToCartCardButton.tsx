@@ -54,8 +54,8 @@ export function AddToCartCardButton({
       onClick={handleAdd}
       aria-label={`Ajouter ${product.title} au panier`}
       className={[
-        'mt-3 py-2 px-3 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5',
-        added ? 'bg-black text-white' : 'bg-white text-text border border-[#D1D1D1] hover:bg-[#F7F7F8] hover:border-text shadow-sm',
+        'mt-3 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 active:scale-95',
+        added ? 'bg-accent text-white shadow-sm' : 'bg-primary text-white hover:bg-primary-dark shadow-md',
         className,
       ].join(' ')}
     >
