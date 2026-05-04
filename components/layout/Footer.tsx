@@ -14,7 +14,7 @@ export function Footer() {
             className="mb-2"
           />
           <p className="mt-3 text-sm leading-relaxed text-[#777]">
-            E-commerce fiable à Bamako.<br />Livraison rapide, paiement Orange Money.
+            Le e-commerce simple, fiable et rapide au Mali.<br />Livraison soignée, paiement Orange Money.
           </p>
         </div>
 

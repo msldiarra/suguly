@@ -7,9 +7,9 @@ import { TrustBanner } from '@/components/ui/TrustBanner'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Suguly — E-commerce Bamako | Livraison rapide, Orange Money',
+  title: 'Suguly — Le e-commerce simple, fiable et rapide au Mali',
   description:
-    'Achetez électronique, mode, beauté et plus sur Suguly. Livraison rapide à Bamako, paiement Orange Money.',
+    'Le nouveau standard du shopping en ligne au Mali. Un grand choix de produits, une commande simple et une livraison soignée.',
 }
 
 import { CATEGORIES } from '@/lib/categories'
@@ -32,11 +32,11 @@ export default async function HomePage() {
             Bienvenue sur Suguly
           </span>
           <h1 className="font-head text-3xl sm:text-5xl font-semibold text-text leading-[1.1] mb-5 tracking-tight">
-            Vos produits préférés, <br />
-            <span className="text-text/90 underline decoration-1 underline-offset-8">livrés chez vous.</span>
+            Le nouveau standard du <br />
+            <span className="text-text/90 underline decoration-1 underline-offset-8">shopping au Mali.</span>
           </h1>
           <p className="text-sm sm:text-base text-text-light max-w-md leading-relaxed mb-8">
-            Électronique, mode, beauté et plus — paiement Orange Money, livraison rapide à Bamako.
+            Un grand choix de produits, une commande simple, une livraison soignée et le paiement Orange Money.
           </p>
           <Link
             href="/catalogue"

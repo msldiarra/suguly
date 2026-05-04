@@ -408,7 +408,7 @@ export default function ComptePage() {
       {customerInfo && ['SHOPPER', 'ADMIN'].includes(customerInfo.role) && (
         <div className="mb-7 rounded-2xl border border-[#E9E3DA] bg-white p-4 shadow-sm">
           <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.08em] text-text-light">Accès métier</p>
-          <h3 className="font-head text-lg font-semibold text-text">Espace shopper</h3>
+          <h3 className="font-head text-lg font-semibold text-text">Espace Logistique</h3>
           <p className="mt-1 text-sm text-text-light">
             Consultez les commandes à traiter, leur détail et leur progression.
           </p>
@@ -417,7 +417,7 @@ export default function ComptePage() {
               href="/shopper"
               className="inline-flex rounded-xl bg-text px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-black"
             >
-              Ouvrir le dashboard shopper
+              Ouvrir le dashboard logistique
             </Link>
             {customerInfo.role === 'ADMIN' && (
               <Link

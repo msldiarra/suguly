@@ -7,12 +7,12 @@ import { Footer } from '@/components/layout/Footer'
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://suguly.com'),
   title: {
-    default: 'Suguly — E-commerce Bamako | Livraison rapide, Orange Money',
+    default: 'Suguly — Le e-commerce simple, fiable et rapide au Mali',
     template: '%s | Suguly',
   },
   description:
-    'Achetez électronique, mode, beauté et plus. Livraison rapide à Bamako, paiement Orange Money.',
-  keywords: ['e-commerce', 'bamako', 'mali', 'orange money', 'livraison'],
+    'Découvrez le nouveau standard du shopping en ligne au Mali. Un grand choix de produits, une commande simple et une livraison soignée à Bamako.',
+  keywords: ['e-commerce', 'bamako', 'mali', 'orange money', 'livraison', 'shopping'],
   icons: {
     icon: '/logo-suguly-new.svg',
     apple: '/logo-suguly-new.svg',

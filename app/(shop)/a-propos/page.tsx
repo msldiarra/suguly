@@ -7,32 +7,45 @@ export default function AboutPage() {
         <section>
           <h2 className="font-head text-xl font-semibold text-text mb-4">Notre Vision</h2>
           <p>
-            Suguly est né d'une ambition simple : offrir aux habitants de Bamako une expérience d'achat en ligne
-            à la fois fluide, fiable et élégante. Nous croyons que la qualité ne doit pas seulement se trouver
-            dans les produits, mais aussi dans la manière dont ils sont présentés et livrés.
+            Suguly est le nouveau standard du shopping en ligne au Mali. Notre ambition est simple : offrir aux habitants 
+            de Bamako une plateforme e-commerce fiable, locale et orientée service. Nous croyons que la confiance 
+            est le premier combat du digital, c'est pourquoi nous en faisons notre priorité absolue.
           </p>
         </section>
 
         <section>
-          <h2 className="font-head text-xl font-semibold text-text mb-4">L'Excellence Locale</h2>
-          <p>
-            En tant qu'acteur local, nous comprenons les besoins spécifiques du marché malien. C'est pourquoi
-            nous avons intégré des solutions de paiement familières comme Orange Money et un service de
-            livraison qui connaît chaque quartier de notre capitale.
-          </p>
+          <h2 className="font-head text-xl font-semibold text-text mb-4">Pourquoi Suguly ?</h2>
+          <div className="grid sm:grid-cols-2 gap-6 not-prose">
+            <div className="p-4 rounded-xl border border-[#E5E5E5] bg-[#F7F7F8]">
+              <h3 className="font-head font-bold text-text mb-2">Disponibilité confirmée</h3>
+              <p className="text-sm text-text-light">Nous vérifions systématiquement la disponibilité de vos produits avant la livraison pour vous éviter toute déception.</p>
+            </div>
+            <div className="p-4 rounded-xl border border-[#E5E5E5] bg-[#F7F7F8]">
+              <h3 className="font-head font-bold text-text mb-2">Produits vérifiés</h3>
+              <p className="text-sm text-text-light">Chaque article est inspecté avant expédition pour garantir qu'il correspond exactement à votre commande et à nos standards de qualité.</p>
+            </div>
+            <div className="p-4 rounded-xl border border-[#E5E5E5] bg-[#F7F7F8]">
+              <h3 className="font-head font-bold text-text mb-2">Livraison professionnelle</h3>
+              <p className="text-sm text-text-light">Notre service de livraison est rapide, soigné et respectueux. Nous prenons soin de votre commande jusqu'à votre porte.</p>
+            </div>
+            <div className="p-4 rounded-xl border border-[#E5E5E5] bg-[#F7F7F8]">
+              <h3 className="font-head font-bold text-text mb-2">Service client réactif</h3>
+              <p className="text-sm text-text-light">Besoin d'aide ? Notre équipe est disponible sur WhatsApp pour répondre à toutes vos questions en temps réel.</p>
+            </div>
+          </div>
         </section>
 
         <section>
-          <h2 className="font-head text-xl font-semibold text-text mb-4">Notre Engagement</h2>
+          <h2 className="font-head text-xl font-semibold text-text mb-4">La simplicité avant tout</h2>
           <p>
-            Chaque produit sur Suguly est sélectionné avec soin. Nous travaillons en étroite collaboration
-            avec nos partenaires pour garantir l'authenticité et la qualité de chaque article qui quitte
-            notre entrepôt pour rejoindre votre foyer.
+            Pas besoin d'être un expert en technologie pour acheter sur Suguly. Choisissez vos produits, 
+            commandez en quelques clics et payez simplement via Orange Money ou à la livraison. 
+            Le e-commerce au Mali n'a jamais été aussi simple.
           </p>
         </section>
 
         <div className="pt-8 border-t border-[#E5E5E5]">
-          <p className="text-sm font-medium text-text">Suguly.</p>
+          <p className="text-sm font-medium text-text italic">Suguly — Achetez en ligne au Mali, simplement.</p>
         </div>
       </div>
     </div>
