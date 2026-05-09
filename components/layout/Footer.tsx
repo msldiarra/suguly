@@ -40,7 +40,7 @@ export function Footer() {
         <div>
           <h4 className="font-head text-white text-sm font-medium mb-3">Contact</h4>
           <a
-            href="https://wa.me/22300000000"
+            href="https://wa.me/22377521717"
             className="flex items-center gap-2 text-[#25D366] no-underline text-sm font-medium"
             target="_blank"
             rel="noopener noreferrer"
