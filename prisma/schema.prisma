@@ -3,14 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
-}
-
-enum UserRole {
-  CUSTOMER
-  SHOPPER
-  ADMIN
 }
 
 model Product {
@@ -40,15 +34,15 @@ model Product {
 }
 
 model Customer {
-  id                    Int      @id @default(autoincrement())
+  id                    Int         @id @default(autoincrement())
   name                  String?
-  phone                 String   @unique
+  phone                 String      @unique
   quartier              String?
   pinHash               String?
-  role                  UserRole @default(CUSTOMER)
-  createdAt             DateTime @default(now())
-  orders                Order[]  @relation("CustomerOrders")
-  assignedShopperOrders Order[]  @relation("AssignedShopperOrders")
+  role                  String      @default("CUSTOMER")
+  createdAt             DateTime    @default(now())
+  orders                Order[]     @relation("CustomerOrders")
+  assignedShopperOrders Order[]     @relation("AssignedShopperOrders")
   orderNotes            OrderNote[]
 }
 
@@ -58,7 +52,7 @@ model OtpSession {
   code      String
   expiresAt DateTime
   createdAt DateTime @default(now())
-  
+
   @@index([phone])
 }
 
@@ -100,39 +94,32 @@ model OrderItem {
 }
 
 model OrderNote {
-  id             Int       @id @default(autoincrement())
-  orderId        Int
-  order          Order     @relation(fields: [orderId], references: [id])
-  authorId       Int?
-  author         Customer? @relation(fields: [authorId], references: [id])
-  body           String
-  createdAt      DateTime  @default(now())
+  id        Int       @id @default(autoincrement())
+  orderId   Int
+  order     Order     @relation(fields: [orderId], references: [id])
+  authorId  Int?
+  author    Customer? @relation(fields: [authorId], references: [id])
+  body      String
+  createdAt DateTime  @default(now())
 
   @@index([orderId])
 }
 
-enum VerificationStatus {
-  PENDING        // Nouvelle demande, pas encore traitée
-  WAITING_DOCS   // WhatsApp envoyé, en attente du justificatif
-  DOCS_RECEIVED  // Documents reçus, en cours d'examen
-  APPROVED       // Entreprise vérifiée et approuvée
-  REJECTED       // Demande rejetée
-}
-
+// status values: PENDING | WAITING_DOCS | DOCS_RECEIVED | APPROVED | REJECTED
 model BusinessVerification {
-  id              Int                @id @default(autoincrement())
-  businessName    String
-  ownerName       String
-  phone           String
-  quartier        String?
-  description     String?
-  status          VerificationStatus @default(PENDING)
-  whatsappSentAt  DateTime?          // Date d'envoi du message WhatsApp
-  docsReceivedAt  DateTime?          // Date de réception des justificatifs
-  resolvedAt      DateTime?          // Date d'approbation ou refus
-  adminNote       String?            // Note interne de l'admin
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
+  id             Int       @id @default(autoincrement())
+  businessName   String
+  ownerName      String
+  phone          String
+  quartier       String?
+  description    String?
+  status         String    @default("PENDING")
+  whatsappSentAt DateTime?
+  docsReceivedAt DateTime?
+  resolvedAt     DateTime?
+  adminNote      String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   @@index([status])
 }
