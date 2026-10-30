@@ -362,6 +362,11 @@ export function ShopperDashboard({
           <Link href={primaryHref} className="rounded-full bg-text px-3 py-2 text-xs font-bold text-white">
             {primaryLabel}
           </Link>
+          {isAdminView && (
+            <Link href="/admin/verification" className="rounded-full border border-[#D1D1D1] px-3 py-2 text-xs font-bold text-text">
+              Vérifications
+            </Link>
+          )}
           <Link href="/compte" className="rounded-full border border-[#D1D1D1] px-3 py-2 text-xs font-bold text-text">
             Profil
           </Link>
